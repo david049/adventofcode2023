@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
-	"strings"
+	"os"
 	"strconv"
+	"strings"
 )
 
 func checkValidGame(input string) (int, int, int) {
@@ -30,7 +30,7 @@ func checkValidGame(input string) (int, int, int) {
 }
 
 func main() {
-	inputstring, _ := ioutil.ReadFile("input.txt")
+	inputstring, _ := os.ReadFile("input.txt")
 	lines := strings.Split(string(inputstring), "\n")
 	sum := 0
 	for _, line := range lines {
@@ -38,10 +38,10 @@ func main() {
 		//gamestr := line1[0][5:]
 		//gamenum, _ := strconv.Atoi(gamestr)
 		lines2 := strings.Split(line1[1], ";")
-	    maxRed := 0
+		maxRed := 0
 		maxBlue := 0
 		maxGreen := 0
-		for _, game := range(lines2) {
+		for _, game := range lines2 {
 			red, green, blue := checkValidGame(game)
 			if red > maxRed {
 				maxRed = red
@@ -53,7 +53,7 @@ func main() {
 				maxBlue = blue
 			}
 		}
-		sum += maxRed*maxBlue*maxGreen
+		sum += maxRed * maxBlue * maxGreen
 	}
 	fmt.Println(sum)
 }

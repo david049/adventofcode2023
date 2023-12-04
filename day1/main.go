@@ -1,13 +1,13 @@
 package main
 
 import (
-	"fmt" 
-	"unicode"
+	"fmt"
+	"os"
 	"strings"
-	"io/ioutil"
+	"unicode"
 )
 
-func trebuchet(input string) (int){
+func trebuchet(input string) int {
 	input = strings.Replace(input, "three", "t3e", -1)
 	input = strings.Replace(input, "four", "f4r", -1)
 	input = strings.Replace(input, "five", "f5e", -1)
@@ -19,7 +19,6 @@ func trebuchet(input string) (int){
 	input = strings.Replace(input, "two", "t2o", -1)
 	digit1 := -1
 	digit2 := -1
-	fmt.Println(input)
 	for _, char := range input {
 		if unicode.IsDigit(char) {
 			if digit1 == -1 {
@@ -32,7 +31,7 @@ func trebuchet(input string) (int){
 }
 
 func main() {
-	inputstring, _ := ioutil.ReadFile("input.txt")
+	inputstring, _ := os.ReadFile("input.txt")
 	sum := 0
 	lines := strings.Split(string(inputstring), "\n")
 	for _, line := range lines {

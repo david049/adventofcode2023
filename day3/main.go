@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 	"unicode"
 )
 
-func convToNum(nums []int, len int) (int) {
+func convToNum(nums []int, len int) int {
 	num := 0
 	mag := 1
 	for i := 1; i < len; i++ {
@@ -20,7 +20,7 @@ func convToNum(nums []int, len int) (int) {
 	return num
 }
 
-func getSym(row int, col int, grid []string) (rune) {
+func getSym(row int, col int, grid []string) rune {
 	if row < 0 || row >= len(grid) {
 		return '.'
 	}
@@ -30,33 +30,33 @@ func getSym(row int, col int, grid []string) (rune) {
 	return rune(grid[row][col])
 }
 
-func checkSyms(len int, startCol int, row int, grid []string, gearRow int, gearCol int) (bool) {
-	for i := startCol - 1; i <= startCol + len; i++ {
-		above := getSym(row - 1, i, grid)
-		below := getSym(row + 1, i, grid)
-		if !unicode.IsDigit(above) && above != '.' && above == '*' && row - 1 == gearRow && i == gearCol{
+func checkSyms(len int, startCol int, row int, grid []string, gearRow int, gearCol int) bool {
+	for i := startCol - 1; i <= startCol+len; i++ {
+		above := getSym(row-1, i, grid)
+		below := getSym(row+1, i, grid)
+		if !unicode.IsDigit(above) && above != '.' && above == '*' && row-1 == gearRow && i == gearCol {
 			return true
 		}
-		if !unicode.IsDigit(below) && below != '.' && below == '*' && row + 1 == gearRow && i == gearCol{
+		if !unicode.IsDigit(below) && below != '.' && below == '*' && row+1 == gearRow && i == gearCol {
 			return true
 		}
 	}
-	left := getSym(row, startCol - 1, grid)
-	right := getSym(row, startCol + len, grid)
-	if !unicode.IsDigit(left) && left != '.' && left == '*' && row == gearRow && startCol - 1 == gearCol {
+	left := getSym(row, startCol-1, grid)
+	right := getSym(row, startCol+len, grid)
+	if !unicode.IsDigit(left) && left != '.' && left == '*' && row == gearRow && startCol-1 == gearCol {
 		return true
 	}
-	if !unicode.IsDigit(right) && right != '.' && right == '*' && row == gearRow && startCol + len == gearCol{
+	if !unicode.IsDigit(right) && right != '.' && right == '*' && row == gearRow && startCol+len == gearCol {
 		return true
 	}
 	return false
 }
 
-func checkGear(row int, col int, grid []string) (int) {
-	sum, nums := checkLine(row - 1, grid, row, col)
-	sum2, nums2 := checkLine(row + 1, grid, row, col)
+func checkGear(row int, col int, grid []string) int {
+	sum, nums := checkLine(row-1, grid, row, col)
+	sum2, nums2 := checkLine(row+1, grid, row, col)
 	sum3, nums3 := checkLine(row, grid, row, col)
-	if nums + nums2 + nums3 != 2 {
+	if nums+nums2+nums3 != 2 {
 		return 0
 	}
 	return sum * sum2 * sum3
@@ -79,7 +79,7 @@ func checkLine(ind int, grid []string, gearRow int, gearCol int) (int, int) {
 			numLen += 1
 		} else {
 			if numLen > 0 {
-				if (checkSyms(numLen, startNum, ind, grid, gearRow, gearCol)) {
+				if checkSyms(numLen, startNum, ind, grid, gearRow, gearCol) {
 					gearRatio *= convToNum(ints, numLen)
 					numNums += 1
 				}
@@ -87,9 +87,9 @@ func checkLine(ind int, grid []string, gearRow int, gearCol int) (int, int) {
 			numLen = 0
 			startNum = 0
 		}
-		if col == len(grid[ind]) - 1 {
+		if col == len(grid[ind])-1 {
 			if numLen > 0 {
-				if (checkSyms(numLen, startNum, ind, grid, gearRow, gearCol)) {
+				if checkSyms(numLen, startNum, ind, grid, gearRow, gearCol) {
 					gearRatio *= convToNum(ints, numLen)
 					numNums += 1
 				}
@@ -102,7 +102,7 @@ func checkLine(ind int, grid []string, gearRow int, gearCol int) (int, int) {
 }
 
 func main() {
-	inputstring, _ := ioutil.ReadFile("input.txt")
+	inputstring, _ := os.ReadFile("input.txt")
 	lines := strings.Split(string(inputstring), "\n")
 	grid := make([]string, len(lines))
 	sum := 0
@@ -115,7 +115,7 @@ func main() {
 				sum += checkGear(ind, col, grid)
 			}
 		}
-		
+
 	}
 	fmt.Println(sum)
 }
